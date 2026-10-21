@@ -1063,6 +1063,10 @@ typedef struct _SS_HDR_METADATA {
 // function when HDR mode is active on the host. This is a Sunshine protocol extension.
 bool LiGetHdrMetadata(PSS_HDR_METADATA metadata);
 
+// Runs one of the host's server commands (Apollo/Vibepollo extension). cmdId is the command's
+// index in the host's serverinfo ServerCommand list. Returns 0 on success, -2 if unsupported.
+int LiSendExecServerCmd(uint8_t cmdId);
+
 // Returns the PyroWave bitstream revision the host advertised in its RTSP DESCRIBE response
 // (x-ss-pyrowave.bitstream), or an empty string if it sent none. The nonary (vibeshine) host
 // sends it; this fork's Sunshine doesn't. Hosts that send it site 4:2:0 chroma at the center.

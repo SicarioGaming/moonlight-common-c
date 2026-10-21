@@ -2084,3 +2084,24 @@ bool LiGetHdrMetadata(PSS_HDR_METADATA metadata) {
     *metadata = hdrMetadata;
     return true;
 }
+
+// Apollo protocol extension, also handled by Vibepollo: run one of the host's
+// server commands. The ID is the command's index in the host's serverinfo list.
+#define PTYPE_EXEC_SERVER_CMD 0x3000
+#define CTRL_CHANNEL_SERVERCTL 0x08
+
+int LiSendExecServerCmd(uint8_t cmdId) {
+    uint8_t payload[4] = { cmdId, 0, 0, 0 };
+
+    // Only Sunshine-derived hosts with an encrypted control stream understand this packet
+    if (!IS_SUNSHINE() || !encryptedControlStream) {
+        return -2;
+    }
+
+    if (!sendMessageAndForget(PTYPE_EXEC_SERVER_CMD, sizeof(payload), payload,
+                              CTRL_CHANNEL_SERVERCTL, ENET_PACKET_FLAG_RELIABLE, false)) {
+        return -1;
+    }
+
+    return 0;
+}

@@ -2105,3 +2105,20 @@ int LiSendExecServerCmd(uint8_t cmdId) {
 
     return 0;
 }
+
+// Artemide's "Prevent Packet Loss": a packet type hosts don't handle (Sunshine-family hosts
+// log it at debug level and drop it), sent often to keep the client's Wi-Fi out of power saving
+int LiSendKeepAlivePayload(void) {
+    uint8_t payload[4] = { 0xAA, 0x55, 0xAA, 0x55 };
+
+    if (!IS_SUNSHINE() || !encryptedControlStream) {
+        return -2;
+    }
+
+    if (!sendMessageAndForget(0x0000, sizeof(payload), payload,
+                              CTRL_CHANNEL_SERVERCTL, ENET_PACKET_FLAG_RELIABLE, false)) {
+        return -1;
+    }
+
+    return 0;
+}

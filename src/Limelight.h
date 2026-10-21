@@ -1067,6 +1067,10 @@ bool LiGetHdrMetadata(PSS_HDR_METADATA metadata);
 // index in the host's serverinfo ServerCommand list. Returns 0 on success, -2 if unsupported.
 int LiSendExecServerCmd(uint8_t cmdId);
 
+// Sends a small packet the host ignores, to keep the client's network link busy
+// (Artemide's "Prevent Packet Loss"). Returns 0 on success, -2 if not a Sunshine-family host.
+int LiSendKeepAlivePayload(void);
+
 // Returns the PyroWave bitstream revision the host advertised in its RTSP DESCRIBE response
 // (x-ss-pyrowave.bitstream), or an empty string if it sent none. The nonary (vibeshine) host
 // sends it; this fork's Sunshine doesn't. Hosts that send it site 4:2:0 chroma at the center.

@@ -626,6 +626,12 @@ static int sendEnableHaptics(void) {
         return 0;
     }
 
+    // Sunshine-family hosts don't know this packet (Vibepollo warns about it on every
+    // connection) and send rumble without it
+    if (IS_SUNSHINE()) {
+        return 0;
+    }
+
     holder = allocatePacketHolder(0);
     if (holder == NULL) {
         return -1;

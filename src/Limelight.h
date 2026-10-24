@@ -1086,7 +1086,7 @@ bool LiGetHdrMetadata(PSS_HDR_METADATA metadata);
 // index in the host's serverinfo ServerCommand list. Returns 0 on success, -2 if unsupported.
 int LiSendExecServerCmd(uint8_t cmdId);
 
-// Sends a small packet the host ignores, to keep the client's network link busy
+// Sends a periodic ping, which the host ignores, to keep the client's network link busy
 // (Artemide's "Prevent Packet Loss"). Returns 0 on success, -2 if not a Sunshine-family host.
 int LiSendKeepAlivePayload(void);
 

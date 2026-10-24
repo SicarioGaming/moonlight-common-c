@@ -2106,16 +2106,19 @@ int LiSendExecServerCmd(uint8_t cmdId) {
     return 0;
 }
 
-// Artemide's "Prevent Packet Loss": a packet type hosts don't handle (Sunshine-family hosts
-// log it at debug level and drop it), sent often to keep the client's Wi-Fi out of power saving
+// Artemide's "Prevent Packet Loss": a packet sent often to keep the client's Wi-Fi out of power
+// saving. It's a periodic ping, which Sunshine-family hosts handle by doing nothing and log only
+// at their most detailed level. A type they don't know (0x0000 was used) is logged at debug level
+// with a hex dump, 50 times a second.
 int LiSendKeepAlivePayload(void) {
-    uint8_t payload[4] = { 0xAA, 0x55, 0xAA, 0x55 };
+    // Shaped like the pings lossStatsThreadFunc() sends: a 16-bit length of 4, then a zero timestamp
+    uint8_t payload[8] = { 4, 0, 0, 0, 0, 0, 0, 0 };
 
     if (!IS_SUNSHINE() || !encryptedControlStream) {
         return -2;
     }
 
-    if (!sendMessageAndForget(0x0000, sizeof(payload), payload,
+    if (!sendMessageAndForget(0x0200, sizeof(payload), payload,
                               CTRL_CHANNEL_SERVERCTL, ENET_PACKET_FLAG_RELIABLE, false)) {
         return -1;
     }
